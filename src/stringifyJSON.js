@@ -6,28 +6,42 @@
 var stringifyJSON = function(obj) {
   // your code goes here
   var type = typeof(obj);
-  if (type !=='object' || type ===null){
-  	if (type ==='string') {
-  		return "'" + obj + "'";
-  	}  	
+  var json = "";
+
+  //Check String situation, seem like we should use '"' but not "'"?! 
+  if (type ==='string'){
+    json =  '"' + obj + '"';
   }
-  else {
-    var key, value;
-    var json = [];
-
-    var arr = (obj && obj.constructor == Array);
-    for (key in obj){
-      value = obj[key];
-      type = typeof(value);
-
-      if (obj.hasOwnProperty(key)){
-        if (type ==='string'){
-          value = "'" + value + "'";
-        }
-        else if (type ==='object' || type !==null) {
-          value = 
-        }
+  //Check Number, Boolean, and null (tricky) situation 
+  else if (type === 'number' || type ==='boolean' || !obj){
+    json = json + obj;
+  }
+  //Check the array situation
+  else if (Array.isArray(obj)){
+    json = '[';
+    for (var i = 0; i<obj.length; i++){
+      json = json + stringifyJSON(obj[i]);
+      if (i <obj.length-1){
+        //add comma before the last element in array
+        json = json + ',';
       }
     }
+    json = json + ']';
   }
+  //Chcek the object situation
+  else {
+    json = '{';
+    for (var key in obj){
+      //function and undefined??? So apparently we don't want to deal with these. 
+      if (key !=='functions' && key !=='undefined'){
+        json = json + stringifyJSON(key) + ':' + stringifyJSON(obj[key]) + ',';
+      }
+    }
+    //If there are items in the object, there will be one extra comma in the end
+    if (json.length>1){
+    json = json.substring(0, json.length-1);
+  }
+    json = json + '}';
+  }
+  return json;
 };
