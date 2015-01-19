@@ -12,9 +12,9 @@ var stringifyJSON = function(obj) {
   if (type ==='string'){
     json =  '"' + obj + '"';
   }
-  //Check Number, Boolean, and null (tricky) situation 
+  //Check Number, Boolean, and null (tricky!) situation 
   else if (type === 'number' || type ==='boolean' || !obj){
-    json = json + obj;
+    json = json + obj;  //just convert the type
   }
   //Check the array situation
   else if (Array.isArray(obj)){
